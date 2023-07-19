@@ -26,6 +26,7 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 		document.addEventListener('click', handler);
 		return () => document.removeEventListener('click', handler);
 	}, [active, onSelect]);
+
 	const selectHandler = (arg: string) => () => onSelect(arg);
 	const mouseEnterHandler = (arg: string) => () => {
 		setActive(arg);

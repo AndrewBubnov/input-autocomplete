@@ -1,3 +1,9 @@
+root {
+    --width: '';
+    --top: '';
+    --left: '';
+}
+
 .hintsList {
     position: absolute;
     box-sizing: border-box;

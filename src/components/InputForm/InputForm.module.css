@@ -1,22 +1,5 @@
-root {
-    --width: '';
-    --top: '';
-    --left: '';
-}
-
 .container {
     position: relative;
-}
-
-.common {
-    font-family: sans-serif;
-    font-size: 1rem;
-}
-
-.input {
-    position: relative;
-    background-color: transparent;
-    z-index: 1;
 }
 
 .hint {
@@ -28,4 +11,15 @@ root {
     border-width: 2px;
     border-style: inset;
     border-color: transparent;
+}
+
+.common {
+    font-family: sans-serif;
+    font-size: 1rem;
+}
+
+.input {
+    position: relative;
+    background-color: transparent;
+    z-index: 1;
 }

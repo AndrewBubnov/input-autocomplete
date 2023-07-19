@@ -1,18 +1,14 @@
-import styles from './Autocomplete.module.css';
 import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { clsx } from 'clsx';
 import { Dimensions, HintsList } from '../HintsList/HintsList.tsx';
 import debounce from 'lodash.debounce';
+import { InputForm } from '../InputForm/InputForm.tsx';
+import { getHints } from '../../utils/getHints.ts';
 
 interface InputProps {
 	value: string;
 	onChange(arg: string): void;
 	className?: string;
 }
-
-const getHints = Array.from({ length: 5000 }, () =>
-	Array.from({ length: 5 }, () => String.fromCharCode(Math.random() * 25 + 97)).join('')
-);
 
 export const Autocomplete = ({ value, onChange, className = '' }: InputProps) => {
 	const [hints, setHints] = useState<string[]>([]);
@@ -54,17 +50,14 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 
 	return (
 		<>
-			<div className={styles.container}>
-				<form onSubmit={submitHandler}>
-					<input
-						ref={ref}
-						value={value}
-						onChange={changeHandler}
-						className={clsx(styles.common, styles.input, className)}
-					/>
-				</form>
-				{hintText && <div className={clsx(styles.common, styles.hint, className)}>{hintText}</div>}
-			</div>
+			<InputForm
+				value={value}
+				changeHandler={changeHandler}
+				submitHandler={submitHandler}
+				hintText={hintText}
+				className={className}
+				ref={ref}
+			/>
 			{relevantHints.length ? (
 				<HintsList
 					list={relevantHints}
