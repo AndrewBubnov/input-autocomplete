@@ -1,0 +1,28 @@
+.hintsList {
+    position: absolute;
+    box-sizing: border-box;
+    top: calc(var(--top) + 0.2rem);
+    left: var(--left);
+    width: var(--width);
+    max-height: calc(100vh - calc(var(--top) + 0.2rem) - 1rem);
+    overflow-y: auto;
+    z-index: 1;
+    padding: 0;
+    margin: 0;
+    min-width: fit-content;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.15);
+}
+
+.hintItem {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem;
+    transition: background-color .3s;
+    cursor: pointer;
+}
+
+.active {
+    background-color: #4682B47F;
+}
