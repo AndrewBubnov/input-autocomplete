@@ -28,8 +28,8 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 			if (e.key === ARROW_DOWN || e.key === ARROW_UP) {
 				setActive(prevState => {
 					const index = list.indexOf(prevState);
-					if (e.key === ARROW_DOWN) return list[Math.min(index + 1, list.length - 1)];
-					return list[Math.max(index - 1, 0)];
+					if (e.key === ARROW_DOWN) return list[index + 1 > list.length - 1 ? 0 : index + 1];
+					return list[index ? index - 1 : list.length - 1];
 				});
 			}
 		};
