@@ -44,6 +44,10 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 		if (active) setHintText(active);
 	}, [active, setHintText]);
 
+	useEffect(() => {
+		document.getElementById(active)?.scrollIntoView({ block: 'nearest' });
+	}, [active]);
+
 	const selectHandler = (arg: string) => () => onSelect(arg);
 	const mouseEnterHandler = (arg: string) => () => setActive(arg);
 
@@ -58,6 +62,7 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 					'--left': dimensions.left,
 				} as CSSProperties
 			}
+			id="ul"
 		>
 			{list.map(hint => (
 				<li
@@ -65,6 +70,7 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 					onClick={selectHandler(hint)}
 					className={clsx(styles.hintItem, { [styles.active]: active === hint })}
 					key={hint}
+					id={hint}
 				>
 					{hint}
 				</li>
