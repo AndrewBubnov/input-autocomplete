@@ -1,8 +1,8 @@
-import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Dimensions, HintsList } from '../HintsList/HintsList.tsx';
-import debounce from 'lodash.debounce';
 import { InputForm } from '../InputForm/InputForm.tsx';
 import { getHints } from '../../utils/getHints.ts';
+import debounce from 'lodash.debounce';
 
 interface InputProps {
 	value: string;
@@ -11,12 +11,15 @@ interface InputProps {
 }
 
 export const Autocomplete = ({ value, onChange, className = '' }: InputProps) => {
-	const [hints, setHints] = useState<string[]>([]);
-	const [hintText, setHintText] = useState<string>('');
+	const [allHints, setAllHints] = useState<string[]>([]);
+	const [relevantHints, setRelevantHints] = useState<string[]>([]);
+	const [currentHint, setCurrentHint] = useState<string>('');
+	const [request, setRequest] = useState<string>('');
+
 	const ref = useRef<HTMLInputElement>(null);
 	const dimensions = useRef<Dimensions>({ top: '', left: '', width: '' });
 
-	const debounced = debounce(() => setHints(getHints), 400);
+	const debounced = debounce(() => setAllHints(getHints), 400);
 
 	useLayoutEffect(() => {
 		if (!ref.current) return;
@@ -24,27 +27,45 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		dimensions.current = { top: `${bottom}px`, left: `${left}px`, width: `${width}px` };
 	}, []);
 
+	useEffect(() => {
+		if (!ref.current || !currentHint) return;
+		ref.current.setSelectionRange(request.length, currentHint.length);
+	}, [currentHint, request]);
+
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
-		onChange(evt.target.value);
-		if (!hints.length) debounced();
+		const { value: currentRequest } = evt.target;
+
+		const relevant = value ? allHints.filter(hint => hint.startsWith(currentRequest)) : [];
+		setRelevantHints(relevant);
+		const hint = relevant.length ? relevant[0] : '';
+		setCurrentHint(hint);
+		const isHintRendered = hint && hint.length > currentRequest.length && currentRequest.length > request.length;
+		onChange(isHintRendered ? hint : currentRequest);
+		setRequest(currentRequest);
+
+		if (!allHints.length) debounced();
 	};
-
-	const relevantHints = useMemo(() => (value ? hints.filter(hint => hint.startsWith(value)) : []), [hints, value]);
-
-	useEffect(() => setHintText(relevantHints.length ? relevantHints[0] : ''), [relevantHints]);
 
 	const selectHandler = useCallback(
 		(arg: string) => {
 			onChange(arg);
-			setHints([]);
+			setRelevantHints([]);
 		},
 		[onChange]
 	);
 
-	const submitHandler = (evt: FormEvent) => {
+	const submitHandler = useCallback((evt: FormEvent) => {
 		evt.preventDefault();
-		setHints([]);
-	};
+		setRelevantHints([]);
+	}, []);
+
+	const currentHintHandler = useCallback(
+		(hint: string) => {
+			setCurrentHint(hint);
+			onChange(hint);
+		},
+		[onChange]
+	);
 
 	return (
 		<>
@@ -52,7 +73,6 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 				value={value}
 				changeHandler={changeHandler}
 				submitHandler={submitHandler}
-				hintText={hintText}
 				className={className}
 				ref={ref}
 			/>
@@ -61,7 +81,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 					list={relevantHints}
 					dimensions={dimensions.current}
 					onSelect={selectHandler}
-					setHintText={setHintText}
+					setHintText={currentHintHandler}
 				/>
 			) : null}
 		</>
