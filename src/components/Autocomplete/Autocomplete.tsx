@@ -1,5 +1,5 @@
 import styles from './Autocomplete.module.css';
-import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
 import { HintsList } from '../HintsList/HintsList.tsx';
 import debounce from 'lodash.debounce';
