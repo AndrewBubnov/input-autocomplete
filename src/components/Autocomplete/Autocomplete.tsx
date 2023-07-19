@@ -3,6 +3,7 @@ import { Dimensions, HintsList } from '../HintsList/HintsList.tsx';
 import { InputForm } from '../InputForm/InputForm.tsx';
 import { getHints } from '../../utils/getHints.ts';
 import debounce from 'lodash.debounce';
+import { DEBOUNCE_DELAY } from '../../constants.ts';
 
 interface InputProps {
 	value: string;
@@ -19,7 +20,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 	const ref = useRef<HTMLInputElement>(null);
 	const dimensions = useRef<Dimensions>({ top: '', left: '', width: '' });
 
-	const debounced = debounce(() => setAllHints(getHints), 400);
+	const debounced = debounce(() => setAllHints(getHints), DEBOUNCE_DELAY);
 
 	useLayoutEffect(() => {
 		if (!ref.current) return;

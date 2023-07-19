@@ -2,19 +2,20 @@ import { CSSProperties, useEffect, useRef, useState } from 'react';
 import styles from './HintList.module.css';
 import { createPortal } from 'react-dom';
 import { clsx } from 'clsx';
+import { ARROW_DOWN, ARROW_UP } from '../../constants.ts';
 
 export interface Dimensions {
 	top: string;
 	left: string;
 	width: string;
 }
-
 interface HintsListProps {
 	dimensions: Dimensions;
 	list: string[];
 	onSelect(arg: string): void;
 	setHintText(arg: string): void;
 }
+
 export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsListProps) => {
 	const [active, setActive] = useState<string>('');
 	const ref = useRef<HTMLUListElement>(null);
@@ -24,10 +25,10 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 			if (active) onSelect(active);
 		};
 		const arrowHandler = (e: KeyboardEvent) => {
-			if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+			if (e.key === ARROW_DOWN || e.key === ARROW_UP) {
 				setActive(prevState => {
 					const index = list.indexOf(prevState);
-					if (e.key === 'ArrowDown') return list[Math.min(index + 1, list.length - 1)];
+					if (e.key === ARROW_DOWN) return list[Math.min(index + 1, list.length - 1)];
 					return list[Math.max(index - 1, 0)];
 				});
 			}
