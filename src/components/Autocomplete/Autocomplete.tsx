@@ -10,13 +10,12 @@ interface InputProps {
 	className?: string;
 }
 
-const getHints = Array.from({ length: 3000 }, () =>
+const getHints = Array.from({ length: 5000 }, () =>
 	Array.from({ length: 5 }, () => String.fromCharCode(Math.random() * 25 + 97)).join('')
 );
 
 export const Autocomplete = ({ value, onChange, className = '' }: InputProps) => {
 	const [hints, setHints] = useState<string[]>([]);
-	const [listOpen, setListOpen] = useState<boolean>(false);
 	const ref = useRef<HTMLInputElement>(null);
 	const dimensions = useRef<{ top: string; left: string; width: string }>({ top: '', left: '', width: '' });
 
@@ -35,21 +34,19 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 
 	const hintsList = value ? hints.filter(hint => hint.startsWith(value)) : [];
 
-	useEffect(() => setListOpen(!!hintsList.length), [hintsList.length]);
-
 	const hintText = hintsList.length ? hintsList[0] : '';
 
 	const selectHandler = useCallback(
 		(arg: string) => {
 			onChange(arg);
-			setListOpen(false);
+			setHints([]);
 		},
 		[onChange]
 	);
 
 	const submitHandler = (evt: FormEvent) => {
 		evt.preventDefault();
-		setHints(prevState => Array.from(new Set([...prevState, value])));
+		setHints([]);
 	};
 
 	return (
@@ -65,7 +62,9 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 				</form>
 				{hintText && <div className={clsx(styles.common, styles.hint, className)}>{hintText}</div>}
 			</div>
-			{listOpen ? <HintsList list={hintsList} dimensions={dimensions.current} onSelect={selectHandler} /> : null}
+			{hints.length ? (
+				<HintsList list={hintsList} dimensions={dimensions.current} onSelect={selectHandler} />
+			) : null}
 		</>
 	);
 };
