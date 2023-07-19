@@ -62,7 +62,6 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 					'--left': dimensions.left,
 				} as CSSProperties
 			}
-			id="ul"
 		>
 			{list.map(hint => (
 				<li
