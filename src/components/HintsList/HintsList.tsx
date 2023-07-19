@@ -3,12 +3,19 @@ import styles from './HintList.module.css';
 import { createPortal } from 'react-dom';
 import { clsx } from 'clsx';
 
+export interface Dimensions {
+	top: string;
+	left: string;
+	width: string;
+}
+
 interface HintsListProps {
-	dimensions: { top: string; left: string; width: string };
+	dimensions: Dimensions;
 	list: string[];
 	onSelect(arg: string): void;
+	setHintText(arg: string): void;
 }
-export const HintsList = ({ dimensions, list, onSelect }: HintsListProps) => {
+export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsListProps) => {
 	const [active, setActive] = useState<string>('');
 	const ref = useRef<HTMLUListElement>(null);
 
@@ -20,7 +27,10 @@ export const HintsList = ({ dimensions, list, onSelect }: HintsListProps) => {
 		return () => document.removeEventListener('click', handler);
 	}, [active, onSelect]);
 	const selectHandler = (arg: string) => () => onSelect(arg);
-	const mouseEnterHandler = (arg: string) => () => setActive(arg);
+	const mouseEnterHandler = (arg: string) => () => {
+		setActive(arg);
+		setHintText(arg);
+	};
 
 	return createPortal(
 		<ul

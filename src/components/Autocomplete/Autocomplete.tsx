@@ -1,7 +1,7 @@
 import styles from './Autocomplete.module.css';
-import { ChangeEvent, FormEvent, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { clsx } from 'clsx';
-import { HintsList } from '../HintsList/HintsList.tsx';
+import { Dimensions, HintsList } from '../HintsList/HintsList.tsx';
 import debounce from 'lodash.debounce';
 
 interface InputProps {
@@ -16,8 +16,9 @@ const getHints = Array.from({ length: 5000 }, () =>
 
 export const Autocomplete = ({ value, onChange, className = '' }: InputProps) => {
 	const [hints, setHints] = useState<string[]>([]);
+	const [hintText, setHintText] = useState<string>('');
 	const ref = useRef<HTMLInputElement>(null);
-	const dimensions = useRef<{ top: string; left: string; width: string }>({ top: '', left: '', width: '' });
+	const dimensions = useRef<Dimensions>({ top: '', left: '', width: '' });
 
 	const debounced = debounce(() => setHints(getHints), 400);
 
@@ -32,9 +33,11 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		if (!hints.length) debounced();
 	};
 
-	const hintsList = value ? hints.filter(hint => hint.startsWith(value)) : [];
+	const relevantHints = useMemo(() => (value ? hints.filter(hint => hint.startsWith(value)) : []), [hints, value]);
 
-	const hintText = hintsList.length ? hintsList[0] : '';
+	useEffect(() => {
+		if (relevantHints.length) setHintText(relevantHints[0]);
+	}, [relevantHints]);
 
 	const selectHandler = useCallback(
 		(arg: string) => {
@@ -62,8 +65,13 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 				</form>
 				{hintText && <div className={clsx(styles.common, styles.hint, className)}>{hintText}</div>}
 			</div>
-			{hints.length ? (
-				<HintsList list={hintsList} dimensions={dimensions.current} onSelect={selectHandler} />
+			{relevantHints.length ? (
+				<HintsList
+					list={relevantHints}
+					dimensions={dimensions.current}
+					onSelect={selectHandler}
+					setHintText={setHintText}
+				/>
 			) : null}
 		</>
 	);
