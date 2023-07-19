@@ -33,10 +33,10 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 			}
 		};
 		document.addEventListener('click', handler);
-		document.addEventListener('keyup', arrowHandler);
+		document.addEventListener('keydown', arrowHandler);
 		return () => {
 			document.removeEventListener('click', handler);
-			document.removeEventListener('keyup', arrowHandler);
+			document.removeEventListener('keydown', arrowHandler);
 		};
 	}, [active, onSelect, list]);
 
