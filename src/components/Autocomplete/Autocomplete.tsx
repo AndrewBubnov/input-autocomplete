@@ -31,9 +31,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 
 	const relevantHints = useMemo(() => (value ? hints.filter(hint => hint.startsWith(value)) : []), [hints, value]);
 
-	useEffect(() => {
-		if (relevantHints.length) setHintText(relevantHints[0]);
-	}, [relevantHints]);
+	useEffect(() => setHintText(relevantHints.length ? relevantHints[0] : ''), [relevantHints]);
 
 	const selectHandler = useCallback(
 		(arg: string) => {
