@@ -23,15 +23,29 @@ export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsList
 		const handler = () => {
 			if (active) onSelect(active);
 		};
+		const arrowHandler = (e: KeyboardEvent) => {
+			if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+				setActive(prevState => {
+					const index = list.indexOf(prevState);
+					if (e.key === 'ArrowDown') return list[Math.min(index + 1, list.length - 1)];
+					return list[Math.max(index - 1, 0)];
+				});
+			}
+		};
 		document.addEventListener('click', handler);
-		return () => document.removeEventListener('click', handler);
-	}, [active, onSelect]);
+		document.addEventListener('keyup', arrowHandler);
+		return () => {
+			document.removeEventListener('click', handler);
+			document.removeEventListener('keyup', arrowHandler);
+		};
+	}, [active, onSelect, list]);
+
+	useEffect(() => {
+		if (active) setHintText(active);
+	}, [active, setHintText]);
 
 	const selectHandler = (arg: string) => () => onSelect(arg);
-	const mouseEnterHandler = (arg: string) => () => {
-		setActive(arg);
-		setHintText(arg);
-	};
+	const mouseEnterHandler = (arg: string) => () => setActive(arg);
 
 	return createPortal(
 		<ul
