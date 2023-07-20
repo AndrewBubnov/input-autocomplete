@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Dimensions, HintsList } from '../HintsList/HintsList.tsx';
+import { Dimensions, HintList } from '../HintList/HintList.tsx';
 import { InputForm } from '../InputForm/InputForm.tsx';
 import { getHints } from '../../utils/getHints.ts';
 import debounce from 'lodash.debounce';
@@ -68,6 +68,8 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		[onChange]
 	);
 
+	const isHintListRendered = !!value && !!relevantHints.length;
+
 	return (
 		<>
 			<InputForm
@@ -77,14 +79,14 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 				className={className}
 				ref={ref}
 			/>
-			{relevantHints.length ? (
-				<HintsList
+			{isHintListRendered && (
+				<HintList
 					list={relevantHints}
 					dimensions={dimensions.current}
 					onSelect={selectHandler}
 					setHintText={currentHintHandler}
 				/>
-			) : null}
+			)}
 		</>
 	);
 };

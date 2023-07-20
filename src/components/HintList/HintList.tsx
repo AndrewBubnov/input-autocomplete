@@ -16,7 +16,7 @@ interface HintsListProps {
 	setHintText(arg: string): void;
 }
 
-export const HintsList = ({ dimensions, list, onSelect, setHintText }: HintsListProps) => {
+export const HintList = ({ dimensions, list, onSelect, setHintText }: HintsListProps) => {
 	const [active, setActive] = useState<string>('');
 	const ref = useRef<HTMLUListElement>(null);
 
