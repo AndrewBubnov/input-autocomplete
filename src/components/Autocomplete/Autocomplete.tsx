@@ -35,7 +35,6 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value: currentRequest } = evt.target;
-
 		const relevant = currentRequest ? allHints.filter(hint => hint.startsWith(currentRequest)) : [];
 		setRelevantHints(relevant);
 		const hint = relevant.length ? relevant[0] : '';
@@ -49,11 +48,17 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 
 	const selectHandler = useCallback(
 		(arg: string) => {
+			setRequest(arg);
 			onChange(arg);
 			setRelevantHints([]);
 		},
 		[onChange]
 	);
+
+	const clickHandler = useCallback(() => {
+		setRequest(currentHint);
+		setRelevantHints([]);
+	}, [currentHint]);
 
 	const submitHandler = useCallback((evt: FormEvent) => {
 		evt.preventDefault();
@@ -76,6 +81,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 				value={value}
 				changeHandler={changeHandler}
 				submitHandler={submitHandler}
+				onConfirm={clickHandler}
 				className={className}
 				ref={ref}
 			/>
