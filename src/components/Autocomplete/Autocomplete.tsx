@@ -36,7 +36,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value: currentRequest } = evt.target;
 
-		const relevant = value ? allHints.filter(hint => hint.startsWith(currentRequest)) : [];
+		const relevant = currentRequest ? allHints.filter(hint => hint.startsWith(currentRequest)) : [];
 		setRelevantHints(relevant);
 		const hint = relevant.length ? relevant[0] : '';
 		setCurrentHint(hint);
