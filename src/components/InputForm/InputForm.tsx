@@ -1,20 +1,20 @@
 import { ChangeEvent, FormEvent, ForwardedRef, forwardRef } from 'react';
 
 interface InputFormProps {
-	submitHandler(evt: FormEvent): void;
+	onSubmit(evt: FormEvent): void;
 	value: string;
-	changeHandler(evt: ChangeEvent<HTMLInputElement>): void;
-	onConfirm(): void;
+	onChange(evt: ChangeEvent<HTMLInputElement>): void;
+	onClick(): void;
 	className: string;
 }
 
 export const InputForm = forwardRef(
 	(
-		{ value, submitHandler, changeHandler, onConfirm, className }: InputFormProps,
+		{ value, onSubmit, onChange, onClick, className }: InputFormProps,
 		ref: ForwardedRef<HTMLInputElement>
 	) => (
-		<form onSubmit={submitHandler}>
-			<input ref={ref} value={value} onInput={changeHandler} onClick={onConfirm} className={className} />
+		<form onSubmit={onSubmit}>
+			<input ref={ref} value={value} onInput={onChange} onClick={onClick} className={className} />
 		</form>
 	)
 );

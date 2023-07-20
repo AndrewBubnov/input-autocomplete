@@ -79,9 +79,9 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		<>
 			<InputForm
 				value={value}
-				changeHandler={changeHandler}
-				submitHandler={submitHandler}
-				onConfirm={clickHandler}
+				onChange={changeHandler}
+				onSubmit={submitHandler}
+				onClick={clickHandler}
 				className={className}
 				ref={ref}
 			/>
