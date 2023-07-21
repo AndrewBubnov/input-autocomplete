@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Autocomplete } from './components/Autocomplete/Autocomplete.tsx';
+import { getHints } from './utils/getHints.ts';
 
 function App() {
 	const [value, setValue] = useState('');
 	return (
 		<>
-			<Autocomplete value={value} onChange={setValue} />
+			<Autocomplete value={value} onChange={setValue} fetchFn={getHints} />
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum cupiditate repellat sunt. Culpa cumque
 				debitis delectus distinctio dolorem libero minima nulla quaerat quibusdam, quo quod suscipit. Aperiam
