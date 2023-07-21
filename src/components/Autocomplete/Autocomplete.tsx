@@ -12,8 +12,7 @@ interface InputProps {
 }
 
 export const Autocomplete = ({ value, onChange, className = '' }: InputProps) => {
-	const [allHints, setAllHints] = useState<string[]>([]);
-	const [relevantHints, setRelevantHints] = useState<string[]>([]);
+	const [hints, setHints] = useState<string[]>([]);
 	const [currentHint, setCurrentHint] = useState<string>('');
 	const [request, setRequest] = useState<string>('');
 
@@ -32,15 +31,13 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 	}, [currentHint, request]);
 
 	const debounced = useCallback(
-		(req: string) => debounce(async () => setAllHints(await getHints(req)), DEBOUNCE_DELAY),
+		(req: string) => debounce(async () => setHints(await getHints(req)), DEBOUNCE_DELAY),
 		[]
 	);
 
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value: currentRequest } = evt.target;
-		const relevant = currentRequest ? allHints.filter(hint => hint.startsWith(currentRequest)) : [];
-		setRelevantHints(relevant);
-		const hint = relevant.length ? relevant[0] : '';
+		const hint = hints.length ? hints[0] : '';
 		setCurrentHint(hint);
 		const isHintRendered = hint && hint.length > currentRequest.length && currentRequest.length > request.length;
 		onChange(isHintRendered ? hint : currentRequest);
@@ -52,19 +49,16 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		(arg: string) => {
 			setRequest(arg);
 			onChange(arg);
-			setRelevantHints([]);
 		},
 		[onChange]
 	);
 
 	const clickHandler = useCallback(() => {
 		setRequest(currentHint);
-		setRelevantHints([]);
 	}, [currentHint]);
 
 	const submitHandler = useCallback((evt: FormEvent) => {
 		evt.preventDefault();
-		setRelevantHints([]);
 	}, []);
 
 	const currentHintHandler = useCallback(
@@ -75,7 +69,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		[onChange]
 	);
 
-	const isHintListRendered = !!value && !!relevantHints.length;
+	const isHintListRendered = !!value && !!hints.length;
 
 	return (
 		<>
@@ -89,7 +83,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 			/>
 			{isHintListRendered && (
 				<HintList
-					list={relevantHints}
+					list={hints}
 					dimensions={dimensions.current}
 					onSelect={selectHandler}
 					setHintText={currentHintHandler}
