@@ -31,10 +31,6 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		ref.current.setSelectionRange(request.length, currentHint.length);
 	}, [currentHint, request]);
 
-	useEffect(() => {
-		if (allHints.length) return;
-	}, [allHints.length]);
-
 	const debounced = useCallback(
 		(req: string) => debounce(async () => setAllHints(await getHints(req)), DEBOUNCE_DELAY),
 		[]
