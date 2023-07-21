@@ -14,7 +14,7 @@ interface InputProps {
 export const Autocomplete = ({ value, onChange, className = '' }: InputProps) => {
 	const [hints, setHints] = useState<string[]>([]);
 	const [currentHint, setCurrentHint] = useState<string>('');
-	const [request, setRequest] = useState<string>('');
+	const request = useRef<string>('');
 
 	const ref = useRef<HTMLInputElement>(null);
 	const dimensions = useRef<Dimensions>({ top: '', left: '', width: '' });
@@ -27,8 +27,8 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 
 	useEffect(() => {
 		if (!ref.current || !currentHint) return;
-		ref.current.setSelectionRange(request.length, currentHint.length);
-	}, [currentHint, request]);
+		ref.current.setSelectionRange(request.current.length, currentHint.length);
+	}, [currentHint]);
 
 	const debounced = useCallback(
 		(req: string) => debounce(async () => setHints(await getHints(req)), DEBOUNCE_DELAY),
@@ -39,27 +39,26 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		const { value: currentRequest } = evt.target;
 		const hint = hints.length ? hints[0] : '';
 		setCurrentHint(hint);
-		const isHintRendered = hint && hint.length > currentRequest.length && currentRequest.length > request.length;
+		const isHintRendered =
+			hint && hint.length > currentRequest.length && currentRequest.length > request.current.length;
 		onChange(isHintRendered ? hint : currentRequest);
-		setRequest(currentRequest);
+		request.current = currentRequest;
 		void debounced(currentRequest)();
 	};
 
 	const selectHandler = useCallback(
 		(arg: string) => {
-			setRequest(arg);
+			request.current = arg;
 			onChange(arg);
 		},
 		[onChange]
 	);
 
 	const clickHandler = useCallback(() => {
-		setRequest(currentHint);
+		request.current = currentHint;
 	}, [currentHint]);
 
-	const submitHandler = useCallback((evt: FormEvent) => {
-		evt.preventDefault();
-	}, []);
+	const submitHandler = useCallback((evt: FormEvent) => evt.preventDefault(), []);
 
 	const currentHintHandler = useCallback(
 		(hint: string) => {
