@@ -20,8 +20,6 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 	const ref = useRef<HTMLInputElement>(null);
 	const dimensions = useRef<Dimensions>({ top: '', left: '', width: '' });
 
-	const debounced = debounce(() => setAllHints(getHints), DEBOUNCE_DELAY);
-
 	useLayoutEffect(() => {
 		if (!ref.current) return;
 		const { width, bottom, left } = ref.current.getBoundingClientRect();
@@ -33,6 +31,15 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		ref.current.setSelectionRange(request.length, currentHint.length);
 	}, [currentHint, request]);
 
+	useEffect(() => {
+		if (allHints.length) return;
+	}, [allHints.length]);
+
+	const debounced = useCallback(
+		(req: string) => debounce(async () => setAllHints(await getHints(req)), DEBOUNCE_DELAY),
+		[]
+	);
+
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value: currentRequest } = evt.target;
 		const relevant = currentRequest ? allHints.filter(hint => hint.startsWith(currentRequest)) : [];
@@ -42,8 +49,7 @@ export const Autocomplete = ({ value, onChange, className = '' }: InputProps) =>
 		const isHintRendered = hint && hint.length > currentRequest.length && currentRequest.length > request.length;
 		onChange(isHintRendered ? hint : currentRequest);
 		setRequest(currentRequest);
-
-		if (!allHints.length) debounced();
+		void debounced(currentRequest)();
 	};
 
 	const selectHandler = useCallback(
