@@ -71,7 +71,7 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 		[onSubmit]
 	);
 
-	const currentHintHandler = useCallback(
+	const setCurrentHintTextHandler = useCallback(
 		(hint: string) => {
 			setCurrentHint(hint);
 			onChange(hint);
@@ -96,7 +96,7 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 					list={hints}
 					dimensions={dimensions.current}
 					onSelect={selectHandler}
-					setHintText={currentHintHandler}
+					setHintText={setCurrentHintTextHandler}
 					request={request.current}
 				/>
 			)}
