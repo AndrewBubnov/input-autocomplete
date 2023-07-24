@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 import { DEBOUNCE_DELAY } from '../../constants.ts';
 import { useDimensions } from '../../hooks/useDimensions.ts';
 
-interface InputProps {
+interface AutocompleteProps {
 	value: string;
 	onChange(arg: string): void;
 	onSubmit(arg: string): void;
@@ -13,7 +13,7 @@ interface InputProps {
 	className?: string;
 }
 
-export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '' }: InputProps) => {
+export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '' }: AutocompleteProps) => {
 	const [hints, setHints] = useState<string[]>([]);
 	const [currentHint, setCurrentHint] = useState<string>('');
 	const request = useRef<string>('');
