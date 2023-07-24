@@ -9,10 +9,10 @@ root {
 .hintList {
     position: absolute;
     box-sizing: border-box;
-    top: calc(var(--top) + 0.2rem);
+    top: var(--top);
     left: var(--left);
     width: var(--width);
-    max-height: min(50vh, calc(100vh - calc(var(--top) + 0.2rem) - 1rem));
+    max-height: 50vh;
     overflow-y: auto;
     z-index: 1;
     padding: 0;

@@ -7,7 +7,6 @@ function App() {
 	return (
 		<>
 			<Autocomplete value={value} onChange={setValue} fetchFn={getMockHints} onSubmit={console.log} />
-
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid at atque autem cum cumque, debitis
 				deleniti dignissimos dolores eligendi ex excepturi expedita fuga harum illum ipsa iste magnam magni

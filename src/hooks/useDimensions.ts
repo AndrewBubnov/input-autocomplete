@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { Dimensions } from '../components/HintList/HintList.tsx';
+import { HINT_LIST_MARGIN } from '../constants.ts';
 
 export const useDimensions = () => {
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -7,8 +8,15 @@ export const useDimensions = () => {
 
 	useLayoutEffect(() => {
 		if (!inputRef.current) return;
-		const { width, bottom, left } = inputRef.current.getBoundingClientRect();
-		dimensions.current = { top: `${bottom}px`, left: `${left}px`, width: `${width}px` };
+		const { top, width, bottom, left } = inputRef.current.getBoundingClientRect();
+		const { innerHeight, scrollY, scrollX } = window;
+		const halfHeight = innerHeight / 2;
+		const isBottom = bottom + scrollY > halfHeight;
+		dimensions.current = {
+			top: `${isBottom ? top + scrollY - halfHeight - HINT_LIST_MARGIN : bottom + HINT_LIST_MARGIN}px`,
+			left: `${left + scrollX}px`,
+			width: `${width}px`,
+		};
 	}, []);
 
 	return { inputRef, dimensions: dimensions.current };
