@@ -1,0 +1,11 @@
+@import '../../variables.css';
+
+.input {}
+
+.input::-moz-selection { /* Code for Firefox */
+    background: var(--app-blue);
+}
+
+.input::selection {
+    background: var(--app-blue);;
+}

@@ -1,4 +1,6 @@
 import { ChangeEvent, FormEvent, ForwardedRef, forwardRef } from 'react';
+import styles from './InputForm.module.css';
+import { clsx } from 'clsx';
 
 interface InputFormProps {
 	onSubmit(evt: FormEvent): void;
@@ -11,7 +13,14 @@ interface InputFormProps {
 export const InputForm = forwardRef(
 	({ value, onSubmit, onChange, onClick, className }: InputFormProps, ref: ForwardedRef<HTMLInputElement>) => (
 		<form onSubmit={onSubmit}>
-			<input ref={ref} value={value} onInput={onChange} onClick={onClick} className={className} id="input" />
+			<input
+				ref={ref}
+				value={value}
+				onInput={onChange}
+				onClick={onClick}
+				className={clsx(className, styles.input)}
+				id="input"
+			/>
 		</form>
 	)
 );

@@ -53,7 +53,7 @@ export const HintList = ({ dimensions, list, onSelect, setHintText }: HintsListP
 	return createPortal(
 		<ul
 			ref={ref}
-			className={styles.hintsList}
+			className={styles.hintList}
 			style={
 				{
 					'--width': dimensions.width,
