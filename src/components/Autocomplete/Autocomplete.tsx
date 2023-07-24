@@ -36,10 +36,8 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 			debounce(async () => {
 				const fetched = await fetchFn(req);
 				const hint = fetched.length ? fetched[0] : '';
+				onChange(hint && hint.length > req.length ? hint : req);
 				setCurrentHint(hint);
-				const isHintRendered = hint && hint.length > req.length && req.length > request.current.length;
-				onChange(isHintRendered ? hint : req);
-				request.current = req;
 				setHints(fetched);
 			}, DEBOUNCE_DELAY),
 		[fetchFn, onChange]
@@ -48,7 +46,8 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
 		onChange(value);
-		void debounced(value)();
+		if (value.length > request.current.length) void debounced(value)();
+		request.current = value;
 	};
 
 	const selectHandler = useCallback(
