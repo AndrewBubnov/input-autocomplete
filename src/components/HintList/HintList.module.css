@@ -12,7 +12,7 @@ root {
     top: calc(var(--top) + 0.2rem);
     left: var(--left);
     width: var(--width);
-    max-height: calc(100vh - calc(var(--top) + 0.2rem) - 1rem);
+    max-height: min(50vh, calc(100vh - calc(var(--top) + 0.2rem) - 1rem));
     overflow-y: auto;
     z-index: 1;
     padding: 0;

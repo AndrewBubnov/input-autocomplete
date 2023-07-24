@@ -1,8 +1,9 @@
-import { ChangeEvent, FormEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Dimensions, HintList } from '../HintList/HintList.tsx';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { HintList } from '../HintList/HintList.tsx';
 import { InputForm } from '../InputForm/InputForm.tsx';
 import debounce from 'lodash.debounce';
 import { DEBOUNCE_DELAY } from '../../constants.ts';
+import { useDimensions } from '../../hooks/useDimensions.ts';
 
 interface InputProps {
 	value: string;
@@ -17,21 +18,14 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 	const [currentHint, setCurrentHint] = useState<string>('');
 	const request = useRef<string>('');
 
-	const ref = useRef<HTMLInputElement>(null);
-	const dimensions = useRef<Dimensions>({ top: '', left: '', width: '' });
-
-	useLayoutEffect(() => {
-		if (!ref.current) return;
-		const { width, bottom, left } = ref.current.getBoundingClientRect();
-		dimensions.current = { top: `${bottom}px`, left: `${left}px`, width: `${width}px` };
-	}, []);
+	const { inputRef, dimensions } = useDimensions();
 
 	useEffect(() => {
-		if (!ref.current || !currentHint) return;
-		ref.current.setSelectionRange(request.current.length, currentHint.length);
-	}, [currentHint]);
+		if (!inputRef.current) return;
+		inputRef.current.setSelectionRange(request.current.length, currentHint.length);
+	}, [currentHint, inputRef]);
 
-	const debounced = useCallback(
+	const fetchHints = useCallback(
 		(req: string) =>
 			debounce(async () => {
 				const fetched = await fetchFn(req);
@@ -46,7 +40,7 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
 		onChange(value);
-		if (value.length > request.current.length) void debounced(value)();
+		if (value.length > request.current.length) void fetchHints(value)();
 		request.current = value;
 	};
 
@@ -66,9 +60,12 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 	const submitHandler = useCallback(
 		(evt: FormEvent) => {
 			evt.preventDefault();
-			onSubmit(ref.current?.value || '');
+			const value = inputRef.current?.value || '';
+			onSubmit(value);
+			request.current = value;
+			setCurrentHint('');
 		},
-		[onSubmit]
+		[inputRef, onSubmit]
 	);
 
 	const setCurrentHintTextHandler = useCallback(
@@ -89,12 +86,12 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 				onSubmit={submitHandler}
 				onClick={clickHandler}
 				className={className}
-				ref={ref}
+				ref={inputRef}
 			/>
 			{isHintListRendered && (
 				<HintList
 					list={hints}
-					dimensions={dimensions.current}
+					dimensions={dimensions}
 					onSelect={selectHandler}
 					setHintText={setCurrentHintTextHandler}
 					request={request.current}

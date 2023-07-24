@@ -1,4 +1,4 @@
-export const getHints = (head: string) =>
+export const getMockHints = (head: string) =>
 	new Promise<string[]>(resolve =>
 		resolve([
 			...new Set(
