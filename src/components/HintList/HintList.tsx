@@ -46,8 +46,6 @@ export const HintList = ({ dimensions, list, onSelect, setHintText, request }: H
 		if (active) setHintText(active);
 	}, [active, setHintText]);
 
-	useEffect(() => document.getElementById(active)?.scrollIntoView({ block: 'nearest' }), [active]);
-
 	const selectHandler = (arg: string) => () => onSelect(arg);
 	const mouseEnterHandler = (arg: string) => () => setActive(arg);
 
