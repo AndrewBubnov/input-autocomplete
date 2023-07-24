@@ -98,6 +98,7 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 					dimensions={dimensions.current}
 					onSelect={selectHandler}
 					setHintText={currentHintHandler}
+					request={request.current}
 				/>
 			)}
 		</>

@@ -1,8 +1,8 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import styles from './HintList.module.css';
 import { createPortal } from 'react-dom';
-import { clsx } from 'clsx';
 import { ARROW_DOWN, ARROW_UP } from '../../constants.ts';
+import { Hint } from '../Hint/Hint.tsx';
 
 export interface Dimensions {
 	top: string;
@@ -14,9 +14,10 @@ interface HintsListProps {
 	list: string[];
 	onSelect(arg: string): void;
 	setHintText(arg: string): void;
+	request: string;
 }
 
-export const HintList = ({ dimensions, list, onSelect, setHintText }: HintsListProps) => {
+export const HintList = ({ dimensions, list, onSelect, setHintText, request }: HintsListProps) => {
 	const [active, setActive] = useState<string>('');
 	const ref = useRef<HTMLUListElement>(null);
 
@@ -63,15 +64,14 @@ export const HintList = ({ dimensions, list, onSelect, setHintText }: HintsListP
 			}
 		>
 			{list.map(hint => (
-				<li
+				<Hint
+					key={hint}
+					request={request}
 					onMouseEnter={mouseEnterHandler(hint)}
 					onClick={selectHandler(hint)}
-					className={clsx(styles.hintItem, { [styles.active]: active === hint })}
-					key={hint}
-					id={hint}
-				>
-					{hint}
-				</li>
+					hint={hint}
+					isActive={active === hint}
+				/>
 			))}
 		</ul>,
 		document.body

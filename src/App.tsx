@@ -6,7 +6,7 @@ function App() {
 	const [value, setValue] = useState('');
 	return (
 		<>
-			<Autocomplete value={value} onChange={setValue} fetchFn={getHints} />
+			<Autocomplete value={value} onChange={setValue} fetchFn={getHints} onSubmit={console.log} />
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum cupiditate repellat sunt. Culpa cumque
 				debitis delectus distinctio dolorem libero minima nulla quaerat quibusdam, quo quod suscipit. Aperiam
