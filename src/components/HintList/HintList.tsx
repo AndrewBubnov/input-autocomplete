@@ -22,7 +22,7 @@ export const HintList = ({ dimensions, list, onSelect, setHintText, request }: H
 	const ref = useRef<HTMLUListElement>(null);
 
 	useEffect(() => {
-		const handler = () => {
+		const clickHandler = () => {
 			if (active) onSelect(active);
 		};
 		const arrowHandler = (e: KeyboardEvent) => {
@@ -34,10 +34,10 @@ export const HintList = ({ dimensions, list, onSelect, setHintText, request }: H
 				});
 			}
 		};
-		document.addEventListener('click', handler);
+		document.addEventListener('click', clickHandler);
 		document.addEventListener('keydown', arrowHandler);
 		return () => {
-			document.removeEventListener('click', handler);
+			document.removeEventListener('click', clickHandler);
 			document.removeEventListener('keydown', arrowHandler);
 		};
 	}, [active, onSelect, list]);
