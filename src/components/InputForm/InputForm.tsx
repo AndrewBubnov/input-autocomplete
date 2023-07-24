@@ -19,7 +19,8 @@ export const InputForm = forwardRef(
 				onInput={onChange}
 				onClick={onClick}
 				className={clsx(className, styles.input)}
-				id="input"
+				autoComplete="off"
+				autoFocus
 			/>
 		</form>
 	)
