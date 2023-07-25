@@ -1,9 +1,10 @@
-import { ChangeEvent, FormEvent, useEffect } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { HintList } from '../HintList/HintList.tsx';
 import { useDimensions } from '../../hooks/useDimensions.ts';
 import { clsx } from 'clsx';
+import { debounce } from '../../utils/debounce.ts';
+import { DEBOUNCE_DELAY } from '../../constants.ts';
 import styles from './Autocomplete.module.css';
-import { useHints } from '../../hooks/useHints.ts';
 
 interface AutocompleteProps {
 	value: string;
@@ -14,30 +15,53 @@ interface AutocompleteProps {
 }
 
 export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '' }: AutocompleteProps) => {
-	const {
-		hints,
-		currentHint,
-		setCurrentHint,
-		request,
-		getHints,
-		clickHandler,
-		activeHintChangeHandler,
-		selectHandler,
-	} = useHints({
-		fetchFn,
-		onChange,
-	});
+	const [hints, setHints] = useState<string[]>([]);
+	const [activeHint, setActiveHint] = useState<string>('');
+	const request = useRef<string>('');
 
 	const { inputRef, dimensions } = useDimensions();
 
 	useEffect(() => {
+		const hint = hints.length ? hints[0] : '';
+		onChange(hint && hint.length > request.current.length ? hint : request.current);
+		setActiveHint(hint);
+	}, [hints, onChange]);
+
+	const getHints = useMemo(
+		() => debounce(async (req: string) => setHints(await fetchFn(req)), DEBOUNCE_DELAY),
+		[fetchFn]
+	);
+
+	const selectHandler = useCallback(
+		(arg: string) => {
+			setHints([]);
+			request.current = arg;
+			onChange(arg);
+		},
+		[onChange]
+	);
+
+	const activeHintChangeHandler = useCallback(
+		(hint: string) => {
+			setActiveHint(hint);
+			onChange(hint);
+		},
+		[onChange]
+	);
+
+	const clickHandler = () => {
+		request.current = activeHint;
+	};
+
+	useEffect(() => {
 		if (!inputRef.current) return;
-		inputRef.current.setSelectionRange(request.current.length, currentHint.length);
-	}, [currentHint, inputRef, request]);
+		inputRef.current.setSelectionRange(request.current.length, activeHint.length);
+	}, [activeHint, inputRef, request]);
 
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
 		onChange(value);
+		if (!value) setHints([]);
 		if (value.length > request.current.length) void getHints(value);
 		request.current = value;
 	};
@@ -46,10 +70,10 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 		evt.preventDefault();
 		onSubmit(value);
 		request.current = value;
-		setCurrentHint('');
+		setHints([]);
 	};
 
-	const isHintListRendered = !!value && !!currentHint;
+	const isHintListRendered = !!value && !!activeHint;
 
 	return (
 		<>

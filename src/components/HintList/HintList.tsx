@@ -48,6 +48,7 @@ const HintListComponent = ({ dimensions, list, onSelect, setHintText, request }:
 
 	const selectHandler = (arg: string) => () => onSelect(arg);
 	const mouseEnterHandler = (arg: string) => () => setActive(arg);
+	console.log(dimensions);
 
 	return createPortal(
 		<ul
