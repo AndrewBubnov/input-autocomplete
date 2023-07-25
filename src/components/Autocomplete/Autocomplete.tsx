@@ -38,7 +38,7 @@ export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
 		onChange(value);
-		if (value.length > request.current.length) void getHints(value)();
+		if (value.length > request.current.length) void getHints(value);
 		request.current = value;
 	};
 

@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
-import debounce from 'lodash.debounce';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { debounce } from '../utils/debounce.ts';
 import { DEBOUNCE_DELAY } from '../constants.ts';
 
 interface UseHintsProps {
@@ -12,9 +12,9 @@ export const useHints = ({ fetchFn, onChange }: UseHintsProps) => {
 	const [currentHint, setCurrentHint] = useState<string>('');
 	const request = useRef<string>('');
 
-	const getHints = useCallback(
-		(req: string) =>
-			debounce(async () => {
+	const getHints = useMemo(
+		() =>
+			debounce(async (req: string) => {
 				const fetched = await fetchFn(req);
 				const hint = fetched.length ? fetched[0] : '';
 				onChange(hint && hint.length > req.length ? hint : req);
