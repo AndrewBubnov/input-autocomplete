@@ -1,9 +1,9 @@
-import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect } from 'react';
 import { HintList } from '../HintList/HintList.tsx';
-import { InputForm } from '../InputForm/InputForm.tsx';
-import debounce from 'lodash.debounce';
-import { DEBOUNCE_DELAY } from '../../constants.ts';
 import { useDimensions } from '../../hooks/useDimensions.ts';
+import { clsx } from 'clsx';
+import styles from './Autocomplete.module.css';
+import { useHints } from '../../hooks/useHints.ts';
 
 interface AutocompleteProps {
 	value: string;
@@ -14,86 +14,61 @@ interface AutocompleteProps {
 }
 
 export const Autocomplete = ({ value, onChange, fetchFn, onSubmit, className = '' }: AutocompleteProps) => {
-	const [hints, setHints] = useState<string[]>([]);
-	const [currentHint, setCurrentHint] = useState<string>('');
-	const request = useRef<string>('');
+	const {
+		hints,
+		currentHint,
+		setCurrentHint,
+		request,
+		getHints,
+		clickHandler,
+		activeHintChangeHandler,
+		selectHandler,
+	} = useHints({
+		fetchFn,
+		onChange,
+	});
 
 	const { inputRef, dimensions } = useDimensions();
 
 	useEffect(() => {
 		if (!inputRef.current) return;
 		inputRef.current.setSelectionRange(request.current.length, currentHint.length);
-	}, [currentHint, inputRef]);
-
-	const fetchHints = useCallback(
-		(req: string) =>
-			debounce(async () => {
-				const fetched = await fetchFn(req);
-				const hint = fetched.length ? fetched[0] : '';
-				onChange(hint && hint.length > req.length ? hint : req);
-				setCurrentHint(hint);
-				setHints(fetched);
-			}, DEBOUNCE_DELAY),
-		[fetchFn, onChange]
-	);
+	}, [currentHint, inputRef, request]);
 
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
 		onChange(value);
-		if (value.length > request.current.length) void fetchHints(value)();
+		if (value.length > request.current.length) void getHints(value)();
 		request.current = value;
 	};
 
-	const selectHandler = useCallback(
-		(arg: string) => {
-			setCurrentHint('');
-			request.current = arg;
-			onChange(arg);
-		},
-		[onChange]
-	);
-
-	const clickHandler = useCallback(() => {
-		request.current = currentHint;
-	}, [currentHint]);
-
-	const submitHandler = useCallback(
-		(evt: FormEvent) => {
-			evt.preventDefault();
-			const value = inputRef.current?.value || '';
-			onSubmit(value);
-			request.current = value;
-			setCurrentHint('');
-		},
-		[inputRef, onSubmit]
-	);
-
-	const setCurrentHintTextHandler = useCallback(
-		(hint: string) => {
-			setCurrentHint(hint);
-			onChange(hint);
-		},
-		[onChange]
-	);
+	const submitHandler = (evt: FormEvent) => {
+		evt.preventDefault();
+		onSubmit(value);
+		request.current = value;
+		setCurrentHint('');
+	};
 
 	const isHintListRendered = !!value && !!currentHint;
 
 	return (
 		<>
-			<InputForm
-				value={value}
-				onChange={changeHandler}
-				onSubmit={submitHandler}
-				onClick={clickHandler}
-				className={className}
-				ref={inputRef}
-			/>
+			<form onSubmit={submitHandler}>
+				<input
+					ref={inputRef}
+					value={value}
+					onInput={changeHandler}
+					onClick={clickHandler}
+					className={clsx(className, styles.input)}
+					autoComplete="off"
+				/>
+			</form>
 			{isHintListRendered && (
 				<HintList
 					list={hints}
 					dimensions={dimensions}
 					onSelect={selectHandler}
-					setHintText={setCurrentHintTextHandler}
+					setHintText={activeHintChangeHandler}
 					request={request.current}
 				/>
 			)}

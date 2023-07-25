@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState } from 'react';
+import { CSSProperties, memo, useEffect, useRef, useState } from 'react';
 import styles from './HintList.module.css';
 import { createPortal } from 'react-dom';
 import { ARROW_DOWN, ARROW_UP } from '../../constants.ts';
@@ -17,7 +17,7 @@ interface HintsListProps {
 	request: string;
 }
 
-export const HintList = ({ dimensions, list, onSelect, setHintText, request }: HintsListProps) => {
+const HintListComponent = ({ dimensions, list, onSelect, setHintText, request }: HintsListProps) => {
 	const [active, setActive] = useState<string>('');
 	const ref = useRef<HTMLUListElement>(null);
 
@@ -75,3 +75,5 @@ export const HintList = ({ dimensions, list, onSelect, setHintText, request }: H
 		document.body
 	);
 };
+
+export const HintList = memo(HintListComponent);
