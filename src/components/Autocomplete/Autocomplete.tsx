@@ -1,10 +1,10 @@
 import { ChangeEvent, FormEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { HintList } from '../HintList/HintList.tsx';
-import { useDimensions } from '../../hooks/useDimensions.ts';
+import { HintList } from 'components/HintList/HintList.tsx';
+import { useHints } from 'hooks/useHints.ts';
+import { useDimensions } from 'hooks/useDimensions.ts';
 import { clsx } from 'clsx';
+import { DEBOUNCE_DELAY } from 'constants.ts';
 import styles from './Autocomplete.module.css';
-import { useHints } from '../../hooks/useHints.ts';
-import { DEBOUNCE_DELAY } from '../../constants.ts';
 
 interface AutocompleteProps {
 	value: string;

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { debounce } from '../utils/debounce.ts';
+import { debounce } from 'utils/debounce.ts';
 
 interface UseHintsProps {
 	fetchFn(arg: string): Promise<string[]>;

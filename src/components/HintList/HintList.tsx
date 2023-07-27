@@ -1,8 +1,8 @@
 import { CSSProperties, memo, useEffect, useRef, useState } from 'react';
-import styles from './HintList.module.css';
 import { createPortal } from 'react-dom';
-import { ARROW_DOWN, ARROW_UP } from '../../constants.ts';
-import { Hint } from '../Hint/Hint.tsx';
+import { ARROW_DOWN, ARROW_UP } from 'constants.ts';
+import { Hint } from 'components/Hint/Hint.tsx';
+import styles from './HintList.module.css';
 
 export interface Dimensions {
 	top: string;
