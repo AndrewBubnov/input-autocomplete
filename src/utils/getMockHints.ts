@@ -10,7 +10,7 @@ export const getMockHints = (head: string) =>
 					...new Set(
 						Array.from({ length: 15 }, () => {
 							const tail = Array.from({ length: 10 }, generateRandomChar).join('');
-							return `${head}${tail}`;
+							return `${head}${tail.slice(0, 5)} ${tail.slice(5)}`;
 						})
 					),
 				])
