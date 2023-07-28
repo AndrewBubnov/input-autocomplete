@@ -18,7 +18,7 @@ interface HintsListProps {
 }
 
 const HintListComponent = ({ dimensions, list, onSelect, setHintText, request }: HintsListProps) => {
-	const [active, setActive] = useState<string>('');
+	const [active, setActive] = useState<string>(list[0]);
 	const ref = useRef<HTMLUListElement>(null);
 
 	useEffect(() => {

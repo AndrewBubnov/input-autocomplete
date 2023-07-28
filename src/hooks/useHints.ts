@@ -24,7 +24,7 @@ export const useHints = ({ fetchFn, isCached, debounceDelay }: UseHintsProps) =>
 	const getHints = useCallback(
 		(req: string) => {
 			if (isCached && cache.current[req]) {
-				setHints(cache.current[req]);
+				setHints([...cache.current[req]]);
 				return;
 			}
 			void fetchHints(req);

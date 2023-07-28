@@ -5,6 +5,7 @@ import { useDimensions } from 'hooks/useDimensions.ts';
 import { clsx } from 'clsx';
 import { DEBOUNCE_DELAY } from 'constants.ts';
 import styles from './Autocomplete.module.css';
+import { useLatest } from 'hooks/useLatest.ts';
 
 interface AutocompleteProps {
 	value: string;
@@ -26,16 +27,25 @@ export const Autocomplete = ({
 	className = '',
 }: AutocompleteProps) => {
 	const [activeHint, setActiveHint] = useState<string>('');
+	const [isSelectable, setIsSelectable] = useState<boolean>(false);
 	const request = useRef<string>('');
 
 	const { hints, setHints, getHints } = useHints({ fetchFn, isCached, debounceDelay });
 	const { inputRef, dimensions } = useDimensions();
+	const activeHintRef = useLatest(activeHint);
 
 	useEffect(() => {
 		const hint = hints.length ? hints[0] : '';
 		onChange(hint && hint.length > request.current.length ? hint : request.current);
 		setActiveHint(hint);
+		setIsSelectable(true);
 	}, [hints, onChange]);
+
+	useEffect(() => {
+		if (!inputRef.current || !isSelectable) return;
+		inputRef.current.setSelectionRange(request.current.length, activeHintRef.current.length);
+		setIsSelectable(false);
+	}, [inputRef, activeHintRef, isSelectable]);
 
 	const selectHandler = useCallback(
 		(arg: string) => {
@@ -49,6 +59,7 @@ export const Autocomplete = ({
 	const activeHintChangeHandler = useCallback(
 		(hint: string) => {
 			setActiveHint(hint);
+			setIsSelectable(true);
 			onChange(hint);
 		},
 		[onChange]
@@ -57,11 +68,6 @@ export const Autocomplete = ({
 	const clickHandler = () => {
 		request.current = activeHint;
 	};
-
-	useEffect(() => {
-		if (!inputRef.current) return;
-		inputRef.current.setSelectionRange(request.current.length, activeHint.length);
-	}, [activeHint, inputRef, request]);
 
 	const changeHandler = (evt: ChangeEvent<HTMLInputElement>) => {
 		const { value } = evt.target;
@@ -90,6 +96,7 @@ export const Autocomplete = ({
 					onClick={clickHandler}
 					className={clsx(className, styles.input)}
 					autoComplete="off"
+					spellCheck={false}
 				/>
 			</form>
 			{isHintListRendered && (
