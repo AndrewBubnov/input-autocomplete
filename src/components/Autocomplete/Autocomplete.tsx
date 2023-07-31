@@ -47,6 +47,8 @@ export const Autocomplete = ({
 		setIsSelectable(false);
 	}, [inputRef, activeHintRef, isSelectable]);
 
+	const closeHandler = () => setHints([]);
+
 	const selectHandler = useCallback(
 		(arg: string) => {
 			setHints([]);
@@ -105,6 +107,7 @@ export const Autocomplete = ({
 					dimensions={dimensions}
 					onSelect={selectHandler}
 					setHintText={activeHintChangeHandler}
+					onClose={closeHandler}
 					request={request.current}
 				/>
 			)}
