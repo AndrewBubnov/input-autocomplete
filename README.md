@@ -1,3 +1,3 @@
-Simple virtualization component for render long lists of various height content.
+Autocomplete component for async data fetching (referenced by Google Chrome)
 
 Created by Andrew Bubnov
