@@ -11,4 +11,8 @@
 - **Google Chrome Style**: The autocomplete behavior is inspired by the search bar in Google Chrome, offering familiarity and ease of use.
 
 - **Mock Data Generation**: Utilizes auto-generated mock data to simulate real-world scenarios during development and testing.
+  
+## Author
+
+Created by **Andrew Bubnov**.
 
